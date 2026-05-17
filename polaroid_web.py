@@ -666,7 +666,11 @@ def _safe_download_name(name):
         base = "album_polaroid.docx"
     if not base.lower().endswith(".docx"):
         base += ".docx"
-    return "".join(ch for ch in base if ch.isalnum() or ch in " ._-")[:120] or "album_polaroid.docx"
+    safe = "".join(ch for ch in base if ch.isalnum() or ch in " ._-")[:120]
+    stem = safe[:-5] if safe.lower().endswith(".docx") else safe
+    if not safe or not any(ch.isalnum() for ch in stem):
+        return "album_polaroid.docx"
+    return safe
 
 
 def _save_valid_image(file_storage, directory, index=0):
