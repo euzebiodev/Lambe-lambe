@@ -13,6 +13,7 @@ def reset_web_state(monkeypatch):
     web._RATE_LIMIT.clear()
     monkeypatch.setattr(web, "DEV_NO_AUTH", True)
     monkeypatch.setattr(web, "PASSWORD", None)
+    monkeypatch.setattr(web, "TRUST_PROXY", False)
     monkeypatch.setattr(web, "RATE_LIMIT_REQUESTS", 60)
     monkeypatch.setattr(web, "RATE_LIMIT_WINDOW", 60)
     yield
@@ -48,8 +49,26 @@ def test_safe_download_name_sanitizes_and_adds_docx():
 
 
 def test_client_ip_prefers_forwarded_for(client):
+    web.TRUST_PROXY = True
     with web.app.test_request_context("/", headers={"X-Forwarded-For": "1.2.3.4, 5.6.7.8"}):
         assert web._client_ip() == "1.2.3.4"
+
+
+def test_client_ip_ignores_forwarded_for_by_default(client):
+    with web.app.test_request_context(
+        "/",
+        headers={"X-Forwarded-For": "1.2.3.4"},
+        environ_base={"REMOTE_ADDR": "127.0.0.1"},
+    ):
+        assert web._client_ip() == "127.0.0.1"
+
+
+def test_env_int_falls_back_for_invalid_values(monkeypatch):
+    monkeypatch.setenv("POLAROID_TEST_INT", "abc")
+    assert web._env_int("POLAROID_TEST_INT", 7) == 7
+
+    monkeypatch.setenv("POLAROID_TEST_INT", "0")
+    assert web._env_int("POLAROID_TEST_INT", 7) == 7
 
 
 def test_rate_limit_blocks_after_limit(monkeypatch):

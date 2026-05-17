@@ -21,6 +21,13 @@ export POLAROID_RATE_LIMIT_REQUESTS=60
 export POLAROID_RATE_LIMIT_WINDOW=60
 ```
 
+Se estiver usando Nginx/reverse proxy e quiser que o rate limit use o IP
+real do cliente via `X-Forwarded-For`, habilite explicitamente:
+
+```bash
+export POLAROID_TRUST_PROXY=1
+```
+
 ## Execucao com Gunicorn
 
 ```bash

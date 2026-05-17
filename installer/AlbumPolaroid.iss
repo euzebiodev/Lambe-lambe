@@ -31,7 +31,6 @@ Name: "brazilianportuguese"; MessagesFile: "compiler:Languages\BrazilianPortugue
 
 [Tasks]
 Name: "desktopicon"; Description: "Criar atalho na Area de Trabalho"; GroupDescription: "Atalhos:"; Flags: unchecked
-Name: "quicklaunchicon"; Description: "Criar atalho na barra de Inicializacao Rapida"; GroupDescription: "Atalhos:"; Flags: unchecked
 
 [Files]
 Source: "..\dist\AlbumPolaroid\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -41,7 +40,6 @@ Source: "install_webview2.ps1"; DestDir: "{tmp}"; Flags: deleteafterinstall
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"
 Name: "{group}\Desinstalar {#MyAppName}"; Filename: "{uninstallexe}"
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; Tasks: desktopicon
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; Tasks: quicklaunchicon
 
 [Run]
 Filename: "powershell.exe"; Parameters: "-NoProfile -ExecutionPolicy Bypass -File ""{tmp}\install_webview2.ps1"""; StatusMsg: "Verificando Microsoft Edge WebView2 Runtime..."; Flags: runhidden waituntilterminated

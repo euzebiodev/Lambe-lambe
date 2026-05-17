@@ -17,6 +17,7 @@ OBS: o arquivo polaroid_album.py precisa estar na MESMA pasta deste script.
 """
 
 import io
+import logging
 import os
 import secrets
 import sys
@@ -584,14 +585,32 @@ btnGerar.addEventListener('click', async () => {
 """
 
 app = Flask(__name__)
-app.config["MAX_CONTENT_LENGTH"] = int(os.environ.get("POLAROID_MAX_UPLOAD_MB", "50")) * 1024 * 1024
 
-MAX_FILES = int(os.environ.get("POLAROID_MAX_FILES", "60"))
-MAX_IMAGE_PIXELS = int(os.environ.get("POLAROID_MAX_IMAGE_PIXELS", "24000000"))
-RATE_LIMIT_REQUESTS = int(os.environ.get("POLAROID_RATE_LIMIT_REQUESTS", "60"))
-RATE_LIMIT_WINDOW = int(os.environ.get("POLAROID_RATE_LIMIT_WINDOW", "60"))
+
+def _env_int(name, default, minimum=1):
+    value = os.environ.get(name)
+    if value is None:
+        return default
+    try:
+        parsed = int(value)
+    except ValueError:
+        logging.warning("Valor invalido para %s=%r; usando %s.", name, value, default)
+        return default
+    if parsed < minimum:
+        logging.warning("Valor abaixo do minimo para %s=%r; usando %s.", name, value, default)
+        return default
+    return parsed
+
+
+app.config["MAX_CONTENT_LENGTH"] = _env_int("POLAROID_MAX_UPLOAD_MB", 50) * 1024 * 1024
+
+MAX_FILES = _env_int("POLAROID_MAX_FILES", 60)
+MAX_IMAGE_PIXELS = _env_int("POLAROID_MAX_IMAGE_PIXELS", 24000000)
+RATE_LIMIT_REQUESTS = _env_int("POLAROID_RATE_LIMIT_REQUESTS", 60)
+RATE_LIMIT_WINDOW = _env_int("POLAROID_RATE_LIMIT_WINDOW", 60)
 PASSWORD = os.environ.get("POLAROID_PASSWORD")
 DEV_NO_AUTH = os.environ.get("POLAROID_DEV_NO_AUTH") == "1"
+TRUST_PROXY = os.environ.get("POLAROID_TRUST_PROXY") == "1"
 ALLOWED_FORMATS = {"JPEG", "PNG", "WEBP"}
 _RATE_LIMIT = {}
 
@@ -600,7 +619,7 @@ Image.MAX_IMAGE_PIXELS = MAX_IMAGE_PIXELS
 
 def _client_ip():
     forwarded = request.headers.get("X-Forwarded-For", "")
-    if forwarded:
+    if TRUST_PROXY and forwarded:
         return forwarded.split(",", 1)[0].strip()
     return request.remote_addr or "unknown"
 
@@ -724,6 +743,7 @@ def preview():
         except ValueError as e:
             return (f"Imagem recusada: {e}", 400)
         except Exception:
+            app.logger.exception("Falha ao gerar preview.")
             return ("Falha ao gerar preview.", 500)
 
     buf = io.BytesIO(png)
@@ -757,6 +777,7 @@ def gerar():
         try:
             montar_documento(caminhos, saida_path, modo=modo)
         except Exception:
+            app.logger.exception("Falha ao gerar documento.")
             return ("Falha ao gerar documento.", 500)
 
         with open(saida_path, "rb") as f:
