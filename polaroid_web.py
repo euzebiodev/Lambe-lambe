@@ -56,7 +56,7 @@ HTML = r"""
 <html lang="pt-br">
 <head>
 <meta charset="utf-8">
-<title>Album Polaroid</title>
+<title>Lambe-lambe</title>
 <link rel="icon" href="/favicon.ico">
 <link rel="apple-touch-icon" href="/assets/icon.png">
 <style>
@@ -214,8 +214,8 @@ HTML = r"""
 </head>
 <body>
 <div class="wrap">
-  <h1>Album Polaroid</h1>
-  <p class="sub">Solte ou escolha suas fotos. Arraste os cards para reordenar. O documento sai com 3 polaroids por linha em uma pagina A4 com linha de corte clara.</p>
+  <h1>Lambe-lambe</h1>
+  <p class="sub">Solte ou escolha suas fotos. Arraste os cards para reordenar. O documento sai no estilo lambe-lambe: fotos para imprimir, recortar e guardar.</p>
 
   <div id="drop" class="drop">
     <strong>Arraste as fotos aqui</strong>
@@ -233,7 +233,7 @@ HTML = r"""
       <label for="modoMaquina">Foto maquina</label>
     </div>
     <label for="nome">Nome do arquivo:</label>
-    <input id="nome" type="text" value="album_polaroid.docx" />
+    <input id="nome" type="text" value="lambe_lambe.docx" />
     <button id="btnLimpar" class="btn ghost" type="button">Limpar</button>
     <button id="btnGerar" class="btn" type="button" disabled>Gerar e baixar</button>
   </div>
@@ -551,7 +551,7 @@ btnGerar.addEventListener('click', async () => {
   btnGerar.disabled = true;
 
   const fd = new FormData();
-  let saida = (nome.value || 'album_polaroid.docx').trim();
+  let saida = (nome.value || 'lambe_lambe.docx').trim();
   if (!saida.toLowerCase().endsWith('.docx')) saida += '.docx';
   fd.append('saida', saida);
   fd.append('modo', document.querySelector('input[name="modo"]:checked').value);
@@ -649,7 +649,7 @@ def _unauthorized():
     return Response(
         "Autenticacao obrigatoria.",
         401,
-        {"WWW-Authenticate": 'Basic realm="Album Polaroid"'},
+        {"WWW-Authenticate": 'Basic realm="Lambe-lambe"'},
     )
 
 
@@ -694,15 +694,15 @@ def app_icon():
 
 
 def _safe_download_name(name):
-    base = Path(name or "album_polaroid.docx").name.strip().replace("\x00", "")
+    base = Path(name or "lambe_lambe.docx").name.strip().replace("\x00", "")
     if not base:
-        base = "album_polaroid.docx"
+        base = "lambe_lambe.docx"
     if not base.lower().endswith(".docx"):
         base += ".docx"
     safe = "".join(ch for ch in base if ch.isalnum() or ch in " ._-")[:120]
     stem = safe[:-5] if safe.lower().endswith(".docx") else safe
     if not safe or not any(ch.isalnum() for ch in stem):
-        return "album_polaroid.docx"
+        return "lambe_lambe.docx"
     return safe
 
 
@@ -807,7 +807,7 @@ def gerar():
 
 if __name__ == "__main__":
     print("=" * 56)
-    print(" Album Polaroid - interface web")
+    print(" Lambe-lambe - interface web")
     print(" Abra no navegador:  http://127.0.0.1:5000")
     print(" (ctrl+c para encerrar)")
     print("=" * 56)

@@ -35,7 +35,7 @@ def test_index_renders_app_page_and_security_headers(client):
     response = client.get("/")
 
     assert response.status_code == 200
-    assert b"Album Polaroid" in response.data
+    assert b"Lambe-lambe" in response.data
     assert b'href="/favicon.ico"' in response.data
     assert response.headers["X-Frame-Options"] == "DENY"
     assert "default-src" in response.headers["Content-Security-Policy"]
@@ -53,10 +53,10 @@ def test_icon_routes_return_assets(client):
 
 def test_safe_download_name_sanitizes_and_adds_docx():
     assert web._safe_download_name("../Album<>:Teste") == "AlbumTeste.docx"
-    assert web._safe_download_name("") == "album_polaroid.docx"
+    assert web._safe_download_name("") == "lambe_lambe.docx"
     assert web._safe_download_name("ok.docx") == "ok.docx"
-    assert web._safe_download_name("\x00") == "album_polaroid.docx"
-    assert web._safe_download_name("<>") == "album_polaroid.docx"
+    assert web._safe_download_name("\x00") == "lambe_lambe.docx"
+    assert web._safe_download_name("<>") == "lambe_lambe.docx"
 
 
 def test_client_ip_prefers_forwarded_for(client):

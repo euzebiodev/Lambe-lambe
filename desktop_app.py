@@ -1,5 +1,5 @@
 """
-Abre o Album Polaroid em uma janela de aplicativo.
+Abre o Lambe-lambe em uma janela de aplicativo.
 
 Este launcher usa a interface Flask existente, mas inicia tudo localmente e
 desativa a autenticacao HTTP Basic para uso no proprio computador.
@@ -45,7 +45,7 @@ def main():
 
     try:
         webview.create_window(
-            "Album Polaroid",
+            "Lambe-lambe",
             server.url,
             width=1240,
             height=860,

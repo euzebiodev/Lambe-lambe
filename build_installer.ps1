@@ -17,12 +17,15 @@ if (Test-Path "dist") {
 if (Test-Path "build") {
     Remove-Item -LiteralPath "build" -Recurse -Force
 }
+if (Test-Path "installer-output") {
+    Remove-Item -LiteralPath "installer-output" -Recurse -Force
+}
 
 & $python -m PyInstaller `
     --noconfirm `
     --clean `
     --windowed `
-    --name "AlbumPolaroid" `
+    --name "LambeLambe" `
     --icon ".\assets\icon.ico" `
     --add-data ".\assets;assets" `
     --collect-all "cv2" `
@@ -42,8 +45,9 @@ if (-not $iscc) {
     throw "ISCC.exe nao encontrado. Instale o Inno Setup 6 com: winget install --id JRSoftware.InnoSetup -e"
 }
 
-& $iscc ".\installer\AlbumPolaroid.iss"
+& $iscc ".\installer\LambeLambe.iss"
 
 Write-Host ""
 Write-Host "Instalador criado em:" -ForegroundColor Green
 Get-ChildItem ".\installer-output\*.exe" | Select-Object -ExpandProperty FullName
+
