@@ -57,6 +57,8 @@ HTML = r"""
 <head>
 <meta charset="utf-8">
 <title>Album Polaroid</title>
+<link rel="icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/assets/icon.png">
 <style>
   :root { color-scheme: light; }
   * { box-sizing: border-box; }
@@ -585,6 +587,8 @@ btnGerar.addEventListener('click', async () => {
 """
 
 app = Flask(__name__)
+APP_DIR = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
+ASSETS_DIR = APP_DIR / "assets"
 
 
 def _env_int(name, default, minimum=1):
@@ -677,6 +681,16 @@ def add_security_headers(response):
     response.headers["Referrer-Policy"] = "no-referrer"
     response.headers["Content-Security-Policy"] = "default-src 'self'; img-src 'self' blob: data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
     return response
+
+
+@app.route("/favicon.ico")
+def favicon():
+    return send_file(ASSETS_DIR / "icon.ico", mimetype="image/vnd.microsoft.icon")
+
+
+@app.route("/assets/icon.png")
+def app_icon():
+    return send_file(ASSETS_DIR / "icon.png", mimetype="image/png")
 
 
 def _safe_download_name(name):

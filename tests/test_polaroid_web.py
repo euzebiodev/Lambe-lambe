@@ -36,8 +36,19 @@ def test_index_renders_app_page_and_security_headers(client):
 
     assert response.status_code == 200
     assert b"Album Polaroid" in response.data
+    assert b'href="/favicon.ico"' in response.data
     assert response.headers["X-Frame-Options"] == "DENY"
     assert "default-src" in response.headers["Content-Security-Policy"]
+
+
+def test_icon_routes_return_assets(client):
+    favicon = client.get("/favicon.ico")
+    app_icon = client.get("/assets/icon.png")
+
+    assert favicon.status_code == 200
+    assert favicon.mimetype == "image/vnd.microsoft.icon"
+    assert app_icon.status_code == 200
+    assert app_icon.mimetype == "image/png"
 
 
 def test_safe_download_name_sanitizes_and_adds_docx():

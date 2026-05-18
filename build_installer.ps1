@@ -23,6 +23,8 @@ if (Test-Path "build") {
     --clean `
     --windowed `
     --name "AlbumPolaroid" `
+    --icon ".\assets\icon.ico" `
+    --add-data ".\assets;assets" `
     --collect-all "cv2" `
     --collect-all "webview" `
     --collect-submodules "clr_loader" `
