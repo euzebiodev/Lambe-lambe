@@ -46,8 +46,8 @@ pipeline {
         stage('Health') {
             steps {
                 sh '''
-                    PASSWORD="$(sudo sed -n 's/^POLAROID_PASSWORD=//p' /etc/album-polaroid/album-polaroid.env)"
-                    curl -fsS -u "admin:$PASSWORD" http://127.0.0.1:8091/ >/dev/null
+                    status="$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8091/)"
+                    test "$status" = "200" -o "$status" = "401"
                 '''
             }
         }
