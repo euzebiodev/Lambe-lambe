@@ -43,9 +43,8 @@ install -d -o root -g root -m 0755 "$APP_DIR"
 install -d -o root -g root -m 0755 "$CONFIG_DIR"
 
 if [ ! -f "$ENV_FILE" ]; then
-    PASSWORD="$(openssl rand -base64 24)"
     cat > "$ENV_FILE" <<EOF
-POLAROID_PASSWORD=$PASSWORD
+POLAROID_DEV_NO_AUTH=1
 POLAROID_MAX_UPLOAD_MB=50
 POLAROID_MAX_FILES=60
 POLAROID_MAX_IMAGE_PIXELS=24000000
@@ -108,7 +107,7 @@ systemctl enable album-polaroid.service
 systemctl restart album-polaroid.service
 
 for attempt in $(seq 1 24); do
-    if systemctl is-active --quiet album-polaroid.service && curl -fsS -u "admin:$(sed -n 's/^POLAROID_PASSWORD=//p' "$ENV_FILE")" http://127.0.0.1:8091/ >/dev/null; then
+    if systemctl is-active --quiet album-polaroid.service && curl -fsS http://127.0.0.1:8091/ >/dev/null; then
         echo "album-polaroid UP"
         exit 0
     fi
