@@ -56,12 +56,14 @@ HTML = r"""
 <html lang="pt-br">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lambe-lambe</title>
 <link rel="icon" href="/favicon.ico">
 <link rel="apple-touch-icon" href="/assets/icon.png">
 <style>
   :root { color-scheme: light; }
   * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
     font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background: #f4f1ec;
@@ -81,6 +83,10 @@ HTML = r"""
     text-align: center;
     transition: .15s;
     cursor: pointer;
+    min-height: 132px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
   .drop.hover { border-color: #2a2a2a; background: #fbf7f0; }
   .drop strong { display: block; font-size: 18px; margin-bottom: 6px; }
@@ -116,6 +122,7 @@ HTML = r"""
     overflow: hidden;
     border-radius: 4px;
     background: #fff;
+    touch-action: none;
   }
   .preview-box.pan-on {
     cursor: grab;
@@ -143,6 +150,7 @@ HTML = r"""
     font-weight: 700;
     cursor: pointer;
     line-height: 1;
+    touch-action: manipulation;
   }
   .tool.active {
     background: #2a2a2a;
@@ -177,7 +185,7 @@ HTML = r"""
   .controls input[type=text] {
     flex: 1; min-width: 200px;
     border: 1px solid #d6cfc1; border-radius: 8px;
-    padding: 10px 12px; font-size: 14px; background:#fbf8f2;
+    padding: 10px 12px; font-size: 16px; background:#fbf8f2;
   }
   .mode {
     display: inline-flex;
@@ -204,12 +212,130 @@ HTML = r"""
     background: #2a2a2a; color: #fff;
     border: 0; padding: 11px 22px; border-radius: 8px;
     font-size: 14px; cursor: pointer; font-weight: 600;
+    min-height: 44px;
+    touch-action: manipulation;
   }
   .btn:disabled { opacity: .4; cursor: not-allowed; }
   .btn.ghost { background: transparent; color:#2a2a2a; border:1px solid #c9c1b3; }
 
   .status { margin-top: 16px; font-size: 13px; color: #555; min-height: 20px; }
   .status.err { color: #b3261e; }
+
+  @media (max-width: 900px) {
+    body {
+      padding: 24px 14px;
+    }
+    .wrap {
+      max-width: 760px;
+    }
+    .grid {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 14px;
+    }
+    .controls {
+      align-items: stretch;
+    }
+    .controls input[type=text] {
+      min-width: 260px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    body {
+      padding: 18px 10px calc(18px + env(safe-area-inset-bottom));
+    }
+    h1 {
+      font-size: 24px;
+    }
+    p.sub {
+      margin-bottom: 18px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .drop {
+      padding: 28px 14px;
+      min-height: 118px;
+      border-radius: 10px;
+    }
+    .drop strong {
+      font-size: 16px;
+    }
+    .drop span {
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .card {
+      padding: 6px;
+    }
+    .preview-row {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+    .tools {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .tool {
+      width: 100%;
+      height: 38px;
+      min-width: 0;
+      font-size: 15px;
+    }
+    .card .x,
+    .card .order {
+      width: 26px;
+      height: 26px;
+    }
+    .card .name {
+      font-size: 10px;
+      line-height: 1.25;
+    }
+    .controls {
+      margin-top: 18px;
+      padding: 12px;
+      gap: 10px;
+      border-radius: 10px;
+      flex-direction: column;
+    }
+    .controls label {
+      font-size: 13px;
+    }
+    .controls input[type=text],
+    .mode,
+    .btn {
+      width: 100%;
+      min-width: 0;
+    }
+    .mode {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .mode label {
+      min-width: 0;
+      padding: 11px 8px;
+      font-size: 13px;
+    }
+    .btn {
+      padding: 12px 14px;
+      font-size: 15px;
+    }
+    .status {
+      font-size: 13px;
+      line-height: 1.35;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 </head>
 <body>
