@@ -659,7 +659,7 @@ def require_auth(view):
         if not _check_rate_limit():
             return ("Muitas requisicoes. Tente novamente em instantes.", 429)
 
-        if DEV_NO_AUTH and _client_ip() in {"127.0.0.1", "::1", "localhost"}:
+        if DEV_NO_AUTH:
             return view(*args, **kwargs)
 
         if not PASSWORD:
